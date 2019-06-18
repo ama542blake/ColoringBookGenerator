@@ -44,21 +44,18 @@ def draw():
 
 
 # creates the window that allows users to add instructions
-# TODO: clean up code
-# TODO: put instruction window not at corner of screen
 def instructionWindow():
     optRoot = Toplevel()
     optRoot.minsize(180, 120)
+    optRoot.geometry('180x120+{}+{}'.format(int(rootXPos/2), rootYPos))
     optRoot.title("Add an instruction")
     ttk.Label(optRoot, text="Rotation(degrees)").grid()
-    rotationVal = StringVar(value='0')
+    rotationVal, distanceVal = StringVar(value='0'), StringVar(value='0')
     rotationentry = ttk.Entry(optRoot, textvariable=rotationVal)
     rotationentry.grid()
     ttk.Label(optRoot, text="Distance(pixels)").grid()
-    distanceVal = StringVar(value='0')
     distanceentry = ttk.Entry(optRoot, textvariable=distanceVal)
     distanceentry.grid()
-    # TODO: how to get return value from createInstruction so that it can be returned to the main function
     ttk.Button(optRoot, text="create", command=lambda: createInstruction(int(rotationVal.get()), int(distanceVal.get()))).grid()
 
 

@@ -54,15 +54,20 @@ def deleteInstruction():
     instructionListBox.delete(ANCHOR)
 
 
-# config window
+# main configuration window
 root = Tk()
-Y_LIMIT = int(0.8 * root.winfo_screenheight())
-X_LIMIT = int(Y_LIMIT * ASPECT_RATIO)
-root.geometry('327x400+800+800')
-root.minsize(327, 500)
-root.title("Draw configuration")
+# get location to place window
+# subtract 250 because the window is 500px tall initially, this will put it in middle
+rootYPos = int(0.5 * root.winfo_screenheight()) - 250
+# subtract 164 because window is 328 px wide initially, this will put it in middle
+rootXPos = int(0.5 * root.winfo_screenwidth()) - 164
+root.geometry('328x500+{}+{}'.format(rootXPos, rootYPos))
+root.resizable(False, False)
+root.title("Coloring Book Setup")
 
 # canvas dimensions
+Y_LIMIT = int(0.8 * root.winfo_screenheight())
+X_LIMIT = int(Y_LIMIT * ASPECT_RATIO)
 canvasOptsFrame = ttk.Frame(root)
 canvasOptsFrame.grid()
 # default canvas axis limits for 8.5 by 11 paper for printing

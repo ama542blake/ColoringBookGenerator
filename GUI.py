@@ -65,35 +65,34 @@ root.geometry('328x500+{}+{}'.format(rootXPos, rootYPos))
 root.resizable(False, False)
 root.title("Coloring Book Setup")
 
-# canvas dimensions
+# initialize canvas dimensions
 Y_LIMIT = int(0.8 * root.winfo_screenheight())
 X_LIMIT = int(Y_LIMIT * ASPECT_RATIO)
+# frame that holds every widget on the main window
 canvasOptsFrame = ttk.Frame(root)
 canvasOptsFrame.grid()
 # default canvas axis limits for 8.5 by 11 paper for printing
 defxMin, defxMax, defyMin, defyMax =\
                             (str(int(0-(X_LIMIT/2))), str(int(X_LIMIT/2)), str(int(0-(Y_LIMIT/2))), str(int(Y_LIMIT/2)))
+# initalize the values for the Entry widgets for canvas dimension
+# TODO: figure out why these don't have to be StringVars for the corresponding Entry objects to work right
 xMin, xMax, yMin, yMax = (defxMin, defxMax, defyMin, defyMax)
 ttk.Label(canvasOptsFrame, text="*If you are using this to print on an 8.5 X 11 page,\nleave these as default").grid()
-# x-axis
-xMinLabel = ttk.Label(canvasOptsFrame, text="X-min")
-xMinLabel.grid()
+# x-axis information
+xMinLabel = ttk.Label(canvasOptsFrame, text="X-min").grid()
 xMinEntry = ttk.Entry(canvasOptsFrame, textvariable=xMin)
 xMinEntry.insert(0, xMin)
 xMinEntry.grid()
-xMaxLabel = ttk.Label(canvasOptsFrame, text="X-max")
-xMaxLabel.grid()
+xMaxLabel = ttk.Label(canvasOptsFrame, text="X-max").grid()
 xMaxEntry = ttk.Entry(canvasOptsFrame, textvariable=xMax)
 xMaxEntry.insert(0, xMax)
 xMaxEntry.grid()
 # y-axis
-yMinLabel = ttk.Label(canvasOptsFrame, text="Y-min")
-yMinLabel.grid()
+yMinLabel = ttk.Label(canvasOptsFrame, text="Y-min").grid()
 yMinEntry = ttk.Entry(canvasOptsFrame, textvariable=yMin)
 yMinEntry.insert(0, yMin)
 yMinEntry.grid()
-yMaxLabel = ttk.Label(canvasOptsFrame, text="Y-max")
-yMaxLabel.grid()
+ttk.Label(canvasOptsFrame, text="Y-max").grid()
 yMaxEntry = ttk.Entry(canvasOptsFrame, textvariable=yMax)
 yMaxEntry.insert(0, yMax)
 yMaxEntry.grid()

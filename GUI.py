@@ -20,6 +20,9 @@ from Instruction import*
 # so that people can print on 8.5 X 11 paper by default
 ASPECT_RATIO = 8.5 / 11
 
+def save():
+    ts = turtle.getscreen()
+    ts.getcanvas().postscript(file="test1.eps")
 
 # TODO: figure out what type of surface to have the turtle draw on
 # TODO: clean up code
@@ -30,13 +33,16 @@ def draw():
     ymax = int(yMaxEntry.get())
     xmin = int(xMinEntry.get())
     xmax = int(xMaxEntry.get())
-    turtle.screensize((xmax - xmin) + 600, (ymax - ymin))
+    turtle.screensize((xmax - xmin), (ymax - ymin))
     for i in range(int(iterationEntry.get())):
         # create actual drawing surface
         # the window
         for instruction in instructions:
             turtle.left(instruction.rotation)
             turtle.forward(instruction.distance)
+
+    saveDrawingButton = ttk.Button(text="Save Drawing", command=save)
+    saveDrawingButton.grid()
 
 
 # creates the window that allows users to add instructions
@@ -80,7 +86,7 @@ rootYPos = int(0.5 * root.winfo_screenheight()) - 250
 # subtract 164 because window is 328 px wide initially, this will put it in middle
 rootXPos = int(0.5 * root.winfo_screenwidth()) - 164
 root.geometry('328x500+{}+{}'.format(rootXPos, rootYPos))
-root.resizable(False, False)
+root.resizable(False, True)
 root.title("Coloring Book Setup")
 
 # initialize canvas dimensions

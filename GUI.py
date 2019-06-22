@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import ttk
-import turtle as turtle
+import turtle
 from Instruction import*
 
+# TODO: Must make instruction distances variable for iteration
 # TODO: Move global variable up to central location
 # TODO: Allow grouping and saving of instructions
 # TODO: Allow repetition of instruction
-# TODO: Allow selection/deletion of multiple instructions at once
+# TODO: Allow selection/dfeletion of multiple instructions at once
 # TODO: Allow instruction to be edited
 # TODO: Allow instructions to be moved around in ListBox
 # TODO: Allow instructions to be duplicated from ListBox
@@ -25,22 +26,17 @@ ASPECT_RATIO = 8.5 / 11
 # TODO: look in to using TK methods rather than Turtle to draw
 # create canvas and draw the user's instructions on it
 def draw():
-    # create actual drawing surface
-    # the window
     ymin = int(yMinEntry.get())
     ymax = int(yMaxEntry.get())
     xmin = int(xMinEntry.get())
     xmax = int(xMaxEntry.get())
-    drawwindow = Tk()
-    drawwindow['height'] = ymax - ymin
-    drawwindow['width'] = xmax - xmin
-    # prevent resizing of draw window to maintain 8.5 x 11 size (for printing)
-    # the drawing surface
-    drawsurface = Canvas(drawwindow)
-    t = turtle.Turtle()
-    for instruction in instructions:
-        t.left(instruction.rotation)
-        t.forward(instruction.distance)
+    turtle.screensize((xmax - xmin) + 600, (ymax - ymin))
+    for i in range(int(iterationEntry.get())):
+        # create actual drawing surface
+        # the window
+        for instruction in instructions:
+            turtle.left(instruction.rotation)
+            turtle.forward(instruction.distance)
 
 
 # creates the window that allows users to add instructions
@@ -120,6 +116,11 @@ ttk.Label(canvasOptsFrame, text="Y-max").grid()
 yMaxEntry = ttk.Entry(canvasOptsFrame, textvariable=yMax)
 yMaxEntry.insert(0, yMax)
 yMaxEntry.grid()
+# iterations
+iterationString = StringVar(value="1")
+ttk.Label(canvasOptsFrame, text="Iterations").grid()
+iterationEntry = ttk.Entry(canvasOptsFrame, textvariable=iterationString)
+iterationEntry.grid()
 # draw button
 button = ttk.Button(root, text="Draw", command=draw)
 button.grid()

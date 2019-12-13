@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import turtle
-from Instruction import*
+from Instruction import *
 
 # TODO: Must make instruction distances variable for iteration
 # TODO: Move global variable up to central location
@@ -29,13 +29,13 @@ def save():
 # TODO: look in to using TK methods rather than Turtle to draw
 # create canvas and draw the user's instructions on it
 def draw():
-    ymin = int(yMinEntry.get())
-    ymax = int(yMaxEntry.get())
-    xmin = int(xMinEntry.get())
-    xmax = int(xMaxEntry.get())
+    y_min = int(y_min_entry.get())
+    y_max = int(y_max_entry.get())
+    x_min = int(x_min_entry.get())
+    x_max = int(x_max_entry.get())
 
-    turtle.screensize((xmax - xmin), (ymax - ymin))
-    for i in range(int(iterationEntry.get())): # how many times to iterate the whole instruction set
+    turtle.screensize((x_max - x_min), (y_max - y_min))
+    for i in range(int(iteration_entry.get())): # how many times to iterate the whole instruction set
         # create actual drawing surface
         # the window
         for instruction in instructions:
@@ -45,113 +45,125 @@ def draw():
 
     saveDrawingButton = ttk.Button(text="Save Drawing", command=save)
     saveDrawingButton.grid()
-    print('v5 draw')
 
 
 # creates the window that allows users to add instructions
-def instructionWindow():
-    optRoot = Toplevel()
-    optRoot.minsize(180, 160)
-    optRoot.geometry('180x120+{}+{}'.format(int(rootXPos/2), rootYPos))
-    optRoot.title("Add an instruction")
+def instruction_window():
+    main_window = Toplevel()
+    main_window.minsize(180, 160)
+    main_window.geometry('180x120+{}+{}'.format(int(root_xpos/2), root_ypos))
+    main_window.title("Add an instruction")
 
-    rotationVal, distanceVal, iterVal = StringVar(value='0'), StringVar(value='0'), StringVar(value='1')
-    ttk.Label(optRoot, text="Rotation(degrees)").grid()
-    rotationentry = ttk.Entry(optRoot, textvariable=rotationVal)
-    rotationentry.grid()
-    ttk.Label(optRoot, text="Distance(pixels)").grid()
-    distanceentry = ttk.Entry(optRoot, textvariable=distanceVal)
-    distanceentry.grid()
-    ttk.Label(optRoot, text="Iterations").grid()
-    distanceentry = ttk.Entry(optRoot, textvariable=iterVal)
-    distanceentry.grid()
-    ttk.Button(optRoot, text="create", command=lambda: createInstruction(int(rotationVal.get()), int(distanceVal.get()))).grid()
+    rotation_val = StringVar(value='0')
+    ttk.Label(main_window, text="Rotation (degrees)").grid()
+    rotation_entry = ttk.Entry(main_window, textvariable=rotation_val)
+    rotation_entry.grid()
+
+    distance_val = StringVar(value='0')
+    ttk.Label(main_window, text="Distance (pixels)").grid()
+    distance_entry = ttk.Entry(main_window, textvariable=distance_val)
+    distance_entry.grid()
+
+    iter_val = StringVar(value='1')
+    ttk.Label(main_window, text="Iterations").grid()
+    iter_entry = ttk.Entry(main_window, textvariable=iter_val)
+    iter_entry.grid()
+
+    ttk.Button(main_window, text="add", command=lambda: create_instruction(int(rotation_val.get()),
+                                                                          int(distance_val.get()),
+                                                                          int(iter_val.get()))).grid()
 
 
 # create the Instruction, adds it to the list called instruction, and adds the string version to instructionStrings,
 # then displays it in instructionListBox
-def createInstruction(rotation, distance, iterations=1):
+def create_instruction(rotation, distance, iterations=1):
     instruction = Instruction(rotation, distance, iterations)
     instructions.append(instruction)
-    instructionStrings.append(str(instruction))
-    instructionListBox.insert(END, instructionStrings[-1])
+    instruction_strings.append(str(instruction))
+    instruction_listbox.insert(END, instruction_strings[-1])
 
 
 # deletes an instruction for the listBox, as well as the list of Instruction object and string representations
-def deleteInstruction():
-    index = instructionListBox.curselection()[0]
-    del instructionStrings[index]
+def delete_instruction():
+    index = instruction_listbox.curselection()[0]
+    del instruction_strings[index]
     del instructions[index]
-    instructionListBox.delete(ANCHOR)
+    instruction_listbox.delete(ANCHOR)
 
 
 # main configuration window
 root = Tk()
 # get location to place window
 # subtract 250 because the window is 500px tall initially, this will put it in middle
-rootYPos = int(0.5 * root.winfo_screenheight()) - 25
+root_ypos = int(0.5 * root.winfo_screenheight()) - 25
 # subtract 164 because window is 328 px wide initially, this will put it in middle
-rootXPos = int(0.5 * root.winfo_screenwidth()) - 164
-root.geometry('328x500+{}+{}'.format(rootXPos, rootYPos))
+root_xpos = int(0.5 * root.winfo_screenwidth()) - 164
+root.geometry('328x500+{}+{}'.format(root_xpos, root_ypos))
 root.resizable(False, True)
 root.title("Coloring Book Setup")
 
 # initialize canvas dimensions
 Y_LIMIT = int(0.8 * root.winfo_screenheight())
 X_LIMIT = int(Y_LIMIT * ASPECT_RATIO)
+
 # frame that holds every widget on the main window
-canvasOptsFrame = ttk.Frame(root)
-canvasOptsFrame.grid()
+canvas_options_frame = ttk.Frame(root)
+canvas_options_frame.grid()
+
 # default canvas axis limits for 8.5 by 11 paper for printing
-defxMin, defxMax, defyMin, defyMax =\
+default_x_min, default_x_max, default_y_min, default_y_max =\
                             (str(int(0-(X_LIMIT/2))), str(int(X_LIMIT/2)), str(int(0-(Y_LIMIT/2))), str(int(Y_LIMIT/2)))
+
 # initalize the values for the Entry widgets for canvas dimension
 # TODO: figure out why these don't have to be StringVars for the corresponding Entry objects to work right
-xMin, xMax, yMin, yMax = (defxMin, defxMax, defyMin, defyMax)
-ttk.Label(canvasOptsFrame, text="*If you are using this to print on an 8.5 X 11 page,\nleave these as default").grid()
+x_min, x_max, y_min, y_max = (default_x_min, default_x_max, default_y_min, default_y_max)
+ttk.Label(canvas_options_frame, text="*If you are using this to print on an 8.5 X 11 page,\nleave these as default").grid()
+
 # TODO: make both X entries in line using grid(row=#, column=#)
 # x-axis information
-xMinLabel = ttk.Label(canvasOptsFrame, text="X-min").grid()
-xMinEntry = ttk.Entry(canvasOptsFrame, textvariable=xMin)
-xMinEntry.insert(0, xMin)
-xMinEntry.grid()
-xMaxLabel = ttk.Label(canvasOptsFrame, text="X-max").grid()
-xMaxEntry = ttk.Entry(canvasOptsFrame, textvariable=xMax)
-xMaxEntry.insert(0, xMax)
-xMaxEntry.grid()
+ttk.Label(canvas_options_frame, text="X-min").grid()
+x_min_entry = ttk.Entry(canvas_options_frame, textvariable=x_min)
+x_min_entry.insert(0, x_min)
+x_min_entry.grid()
+ttk.Label(canvas_options_frame, text="X-max").grid()
+x_max_entry = ttk.Entry(canvas_options_frame, textvariable=x_max)
+x_max_entry.insert(0, x_max)
+x_max_entry.grid()
+
 # TODO: make both Y entries in line using grid(row=#, column=#)
 # y-axis
-yMinLabel = ttk.Label(canvasOptsFrame, text="Y-min").grid()
-yMinEntry = ttk.Entry(canvasOptsFrame, textvariable=yMin)
-yMinEntry.insert(0, yMin)
-yMinEntry.grid()
-ttk.Label(canvasOptsFrame, text="Y-max").grid()
-yMaxEntry = ttk.Entry(canvasOptsFrame, textvariable=yMax)
-yMaxEntry.insert(0, yMax)
-yMaxEntry.grid()
+ttk.Label(canvas_options_frame, text="Y-min").grid()
+y_min_entry = ttk.Entry(canvas_options_frame, textvariable=y_min)
+y_min_entry.insert(0, y_min)
+y_min_entry.grid()
+ttk.Label(canvas_options_frame, text="Y-max").grid()
+y_max_entry = ttk.Entry(canvas_options_frame, textvariable=y_max)
+y_max_entry.insert(0, y_max)
+y_max_entry.grid()
+
 # iterations
-iterationString = StringVar(value="1")
-ttk.Label(canvasOptsFrame, text="Iterations").grid()
-iterationEntry = ttk.Entry(canvasOptsFrame, textvariable=iterationString)
-iterationEntry.grid()
+iteration_string = StringVar(value="1")
+ttk.Label(canvas_options_frame, text="Iterations").grid()
+iteration_entry = ttk.Entry(canvas_options_frame, textvariable=iteration_string)
+iteration_entry.grid()
 # draw button
 button = ttk.Button(root, text="Draw", command=draw)
 button.grid()
 
 # instruction ListBox
 instructions = []  # holds the actual Instruction objects
-instructionStrings = []  # holds the string representation of the Instruction for user readability
-instructionListFrame = ttk.LabelFrame(root, text="Instructions", height=200, width=200)
-instructionListFrame.grid()
-instructionListBox = Listbox(root, listvariable=instructionStrings)  # list of instructions
-instructionListBox.grid()
+instruction_strings = []  # holds the string representation of the Instruction for user readability
+instruction_list_frame = ttk.LabelFrame(root, text="Instructions", height=200, width=200)
+instruction_list_frame.grid()
+instruction_listbox = Listbox(root, listvariable=instruction_strings)  # list of instructions
+instruction_listbox.grid()
+
 # TODO: make these two buttons in line with one another
 # instruction addition
-addButton = ttk.Button(instructionListFrame, text="add", command=instructionWindow)  # button makes instruction window pop up
-addButton.grid()
+ttk.Button(instruction_list_frame, text="add", command=instruction_window).grid()  # button makes instruction window pop up
+
 # instruction deletion
-delButton = ttk.Button(instructionListFrame, text="del", command=deleteInstruction)
-delButton.grid()
+ttk.Button(instruction_list_frame, text="del", command=delete_instruction).grid()
 
 # start GUI
 root.mainloop()

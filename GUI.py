@@ -33,38 +33,45 @@ def draw():
     ymax = int(yMaxEntry.get())
     xmin = int(xMinEntry.get())
     xmax = int(xMaxEntry.get())
+
     turtle.screensize((xmax - xmin), (ymax - ymin))
-    for i in range(int(iterationEntry.get())):
+    for i in range(int(iterationEntry.get())): # how many times to iterate the whole instruction set
         # create actual drawing surface
         # the window
         for instruction in instructions:
-            turtle.left(instruction.rotation)
-            turtle.forward(instruction.distance)
+            for j in range(instruction.iterations):
+                turtle.left(instruction.rotation)
+                turtle.forward(instruction.distance)
 
     saveDrawingButton = ttk.Button(text="Save Drawing", command=save)
     saveDrawingButton.grid()
+    print('v5 draw')
 
 
 # creates the window that allows users to add instructions
 def instructionWindow():
     optRoot = Toplevel()
-    optRoot.minsize(180, 120)
+    optRoot.minsize(180, 160)
     optRoot.geometry('180x120+{}+{}'.format(int(rootXPos/2), rootYPos))
     optRoot.title("Add an instruction")
+
+    rotationVal, distanceVal, iterVal = StringVar(value='0'), StringVar(value='0'), StringVar(value='1')
     ttk.Label(optRoot, text="Rotation(degrees)").grid()
-    rotationVal, distanceVal = StringVar(value='0'), StringVar(value='0')
     rotationentry = ttk.Entry(optRoot, textvariable=rotationVal)
     rotationentry.grid()
     ttk.Label(optRoot, text="Distance(pixels)").grid()
     distanceentry = ttk.Entry(optRoot, textvariable=distanceVal)
+    distanceentry.grid()
+    ttk.Label(optRoot, text="Iterations").grid()
+    distanceentry = ttk.Entry(optRoot, textvariable=iterVal)
     distanceentry.grid()
     ttk.Button(optRoot, text="create", command=lambda: createInstruction(int(rotationVal.get()), int(distanceVal.get()))).grid()
 
 
 # create the Instruction, adds it to the list called instruction, and adds the string version to instructionStrings,
 # then displays it in instructionListBox
-def createInstruction(rotation, distance):
-    instruction = Instruction(rotation, distance)
+def createInstruction(rotation, distance, iterations=1):
+    instruction = Instruction(rotation, distance, iterations)
     instructions.append(instruction)
     instructionStrings.append(str(instruction))
     instructionListBox.insert(END, instructionStrings[-1])
@@ -82,7 +89,7 @@ def deleteInstruction():
 root = Tk()
 # get location to place window
 # subtract 250 because the window is 500px tall initially, this will put it in middle
-rootYPos = int(0.5 * root.winfo_screenheight()) - 250
+rootYPos = int(0.5 * root.winfo_screenheight()) - 25
 # subtract 164 because window is 328 px wide initially, this will put it in middle
 rootXPos = int(0.5 * root.winfo_screenwidth()) - 164
 root.geometry('328x500+{}+{}'.format(rootXPos, rootYPos))

@@ -16,35 +16,54 @@ from Instruction import *
 # TODO: Add start/end position of each instruction in as [(x1,y1), (x2,y2)] to allow  users to plan instructions better
 # TODO: Add functionality to save instructions
 # TODO: Allow user to specify colors in instructions (probably useless for coloring books, but maybe not)
+# TODO: Prevent image from being saved until it's done being drawn
 
 # so that people can print on 8.5 X 11 paper by default
 ASPECT_RATIO = 8.5 / 11
 
 def save():
-    ts = turtle.getscreen()
-    ts.getcanvas().postscript(file="test1.eps")
+    turt.getscreen().getcanvas().postscript(file="CBGen.eps")
 
 # TODO: figure out what type of surface to have the turtle draw on
 # TODO: clean up code
 # TODO: look in to using TK methods rather than Turtle to draw
 # create canvas and draw the user's instructions on it
 def draw():
+    top = Toplevel()
+    top.title("Your Drawing!")
+    canvas = Canvas(top)
+    canvas.pack()
+    ttk.Button(canvas, text="Save Drawing", command=save).pack()
+    canvas.mainloop()
+
+    print('nach loop')
+    # this is to handle a Mac OS bug that doesn't allow TurtleScreen objects to be put on anything but a root window
+    if sys.platform == 'darwin':
+        sys.platform = ''
+    global turt  # needs to be accessed by save()
+    turt = turtle.RawTurtle(canvas)  # to handle the bug mentioned above
+    if sys.platform == '':
+        sys.platform = 'darwin'
+
     y_min = int(y_min_entry.get())
     y_max = int(y_max_entry.get())
     x_min = int(x_min_entry.get())
     x_max = int(x_max_entry.get())
 
-    turtle.screensize((x_max - x_min), (y_max - y_min))
+    x_size = x_max - x_min
+    y_size = y_max - y_min
+    turt.getscreen().screensize(canvwidth=x_size, canvheight=y_size)
+    print(1)
     for i in range(int(iteration_entry.get())): # how many times to iterate the whole instruction set
-        # create actual drawing surface
-        # the window
+        print(2)
         for instruction in instructions:
+            print(3)
             for j in range(instruction.iterations):
-                turtle.left(instruction.rotation)
-                turtle.forward(instruction.distance)
+                print(4)
+                turt.left(instruction.rotation)
+                turt.forward(instruction.distance)
 
-    saveDrawingButton = ttk.Button(text="Save Drawing", command=save)
-    saveDrawingButton.grid()
+    turt.getscreen().mainloop()
 
 
 # creates the window that allows users to add instructions
@@ -84,6 +103,7 @@ def create_instruction(rotation, distance, iterations=1):
 
 
 # deletes an instruction for the listBox, as well as the list of Instruction object and string representations
+# TODO what to do when there is no instruction selected/no instructions that exist
 def delete_instruction():
     index = instruction_listbox.curselection()[0]
     del instruction_strings[index]
